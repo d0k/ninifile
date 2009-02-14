@@ -22,6 +22,7 @@ namespace OldFormatsSharp
                 writer.WriteLine("d2=1,23");
                 writer.WriteLine("b=false");
                 writer.WriteLine("i=23; foo");
+                writer.WriteLine("date=2009-02-13 23:31:30");
             }
         }
 
@@ -190,6 +191,29 @@ namespace OldFormatsSharp
             }
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(23.42, ini.ReadDouble("Section1", "doesnotexist", 0));
+            }
+        }
+
+        [Test]
+        public void ReadDateTime() {
+            DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
+            using (IniFile ini = new IniFile(fileName)) {
+
+                Assert.AreEqual(date, ini.ReadDateTime("Test", "date", new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreEqual(date, ini.ReadDateTime("Test", "date", "yyyy-MM-dd HH:mm:ss", new DateTime(), CultureInfo.InvariantCulture));
+            }
+        }
+
+        [Test]
+        public void WriteDateTime() {
+            DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
+            using (IniFile ini = new IniFile(fileName)) {
+                Assert.AreNotEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
+                ini.WriteDateTime("Section1", "doesnotexist", date, CultureInfo.InvariantCulture);
+                Assert.AreEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
+            }
+            using (IniFile ini = new IniFile(fileName)) {
+                Assert.AreEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
             }
         }
 

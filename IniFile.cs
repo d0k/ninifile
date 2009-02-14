@@ -186,7 +186,7 @@ namespace OldFormatsSharp
         /// <summary>
         /// Writes the string <b>value</b> to the key <b>key</b> in the section
         /// <b>section</b>. The key/section will be created if the key and/or
-        /// section don't exist.
+        /// section doesn't exist.
         /// </summary>
         public virtual void WriteString(string section, string key, string value) {
             string newLine = key + '=' + value;
@@ -293,6 +293,48 @@ namespace OldFormatsSharp
         /// </summary>
         public virtual void WriteDouble(string section, string key, double value) {
             WriteDouble(section, key, value, CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        /// Gets the contents at the specified key as a DateTime.
+        /// </summary>
+        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
+        /// <param name="provider">A FormatProvider to format the data.</param>
+        public DateTime ReadDateTime(string section, string key, DateTime defaultvalue, IFormatProvider provider) {
+            DateTime ret;
+            if (DateTime.TryParse(ReadString(section, key), provider, DateTimeStyles.None, out ret))
+                return ret;
+            return defaultvalue;
+        }
+
+        /// <summary>
+        /// Gets the contents at the specified key as a DateTime.
+        /// </summary>
+        /// <param name="format">A format string to format the data</param>
+        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
+        /// <param name="provider">A FormatProvider to format the data.</param>
+        public DateTime ReadDateTime(string section, string key, string format, DateTime defaultvalue, IFormatProvider provider) {
+            DateTime ret;
+            if (DateTime.TryParseExact(ReadString(section, key), format, provider, DateTimeStyles.None, out ret))
+                return ret;
+            return defaultvalue;
+        }
+
+        /// <summary>
+        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// </summary>
+        /// <param name="provider">A FormatProvider to format the data.</param>
+        public void WriteDateTime(string section, string key, DateTime value, IFormatProvider provider) {
+            WriteString(section, key, value.ToString(provider));
+        }
+
+        /// <summary>
+        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// </summary>
+        /// <param name="format">A format string to format the data</param>
+        /// <param name="provider">A FormatProvider to format the data.</param>
+        public void WriteDateTime(string section, string key, DateTime value, string format, IFormatProvider provider) {
+            WriteString(section, key, value.ToString(format, provider));
         }
     }
 }
