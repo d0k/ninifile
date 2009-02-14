@@ -211,9 +211,9 @@ namespace OldFormatsSharp
         /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
         public virtual bool ReadBool(string section, string key, bool defaultvalue) {
             bool ret;
-            if (!bool.TryParse(ReadString(section, key), out ret))
-                return defaultvalue;
-            return ret;
+            if (bool.TryParse(ReadString(section, key), out ret))
+                return ret;
+            return defaultvalue;
         }
 
         /// <summary>
@@ -229,9 +229,9 @@ namespace OldFormatsSharp
         /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
         public virtual int ReadInteger(string section, string key, int defaultvalue) {
             int ret;
-            if (!int.TryParse(ReadString(section, key), NumberStyles.Integer, CultureInfo.InvariantCulture, out ret))
-                return defaultvalue;
-            return ret;
+            if (int.TryParse(ReadString(section, key), NumberStyles.Integer, CultureInfo.InvariantCulture, out ret))
+                return ret;
+            return defaultvalue;
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace OldFormatsSharp
         /// <param name="provider">A FormatProvider to read the data.</param>
         public virtual double ReadDouble(string section, string key, double defaultvalue, IFormatProvider provider) {
             double ret;
-            if (!double.TryParse(ReadString(section, key), NumberStyles.Float, provider, out ret))
-                return defaultvalue;
-            return ret;
+            if (double.TryParse(ReadString(section, key), NumberStyles.Float, provider, out ret))
+                return ret;
+            return defaultvalue;
         }
 
         /// <summary>
