@@ -124,7 +124,7 @@ namespace OldFormatsSharp
             if (i != -1) {
                 for (; i < Count; i++) {
                     string line = this[i];
-                    if (line.StartsWith(name + '=', StringComparison.Ordinal)) {
+                    if (line.StartsWith(name + '=', StringComparison.Ordinal) || line.StartsWith(name + " =", StringComparison.Ordinal)) {
                         RemoveLine(i);
                         return;
                     }
@@ -161,7 +161,7 @@ namespace OldFormatsSharp
         private int FindKey(string key, int i) {
             for (; i < Count; i++) {
                 string line = StripComments(this[i]);
-                if (line.StartsWith(key + '=', StringComparison.Ordinal))
+                if (line.StartsWith(key + '=', StringComparison.Ordinal) || line.StartsWith(key + " =", StringComparison.Ordinal))
                     return i;
             }
             return -1;
@@ -177,7 +177,7 @@ namespace OldFormatsSharp
                 i = FindKey(key, i);
                 if (i != -1) {
                     string line = StripComments(this[i]);
-                    return line.Substring(line.IndexOf('=') + 1);
+                    return line.Substring(line.IndexOf('=') + 1).Trim(new char[] { ' ', '"' });
                 }
             }
             return defaultvalue;

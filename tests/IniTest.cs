@@ -1,4 +1,4 @@
-namespace OldFormatsSharp
+namespace OldFormatsSharp.tests
 {
     using System;
     using System.Globalization;
@@ -19,10 +19,12 @@ namespace OldFormatsSharp
                 writer.WriteLine("; testest");
                 writer.WriteLine(";[NotASection]");
                 writer.WriteLine("d=1.23");
+                writer.WriteLine("garbage");
                 writer.WriteLine("d2=1,23");
                 writer.WriteLine("b=false");
                 writer.WriteLine("i=23; foo");
                 writer.WriteLine("date=2009-02-13 23:31:30");
+                writer.WriteLine("file = \"acme payroll.dat\"");
             }
         }
 
@@ -42,6 +44,7 @@ namespace OldFormatsSharp
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual("bar", ini.ReadString("Section1", "foo"));
                 Assert.AreEqual("23", ini.ReadString("Test", "i"));
+                Assert.AreEqual("acme payroll.dat", ini.ReadString("Test", "file"));
             }
         }
 
@@ -87,8 +90,11 @@ namespace OldFormatsSharp
         public void DeleteKey() {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreNotEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
+                Assert.AreNotEqual(String.Empty, ini.ReadString("Test", "file", String.Empty));
                 ini.DeleteKey("Test", "b");
+                ini.DeleteKey("Test", "file");
                 Assert.AreEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
+                Assert.AreEqual(String.Empty, ini.ReadString("Test", "file", String.Empty));
             }
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
