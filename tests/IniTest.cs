@@ -12,7 +12,7 @@ namespace OldFormatsSharp.tests
 
         [SetUp]
         public void Init() {
-            using (StreamWriter writer = new StreamWriter("test.ini")) {
+            using (StreamWriter writer = new StreamWriter(fileName)) {
                 writer.WriteLine("[Section1] ; dumb comment");
                 writer.WriteLine("foo=bar");
                 writer.WriteLine("[Test]");
@@ -225,7 +225,7 @@ namespace OldFormatsSharp.tests
 
         [TearDown]
         public void Cleanup() {
-            File.Delete("test.ini");
+            File.Delete(fileName);
         }
     }
 }

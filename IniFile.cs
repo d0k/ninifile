@@ -5,6 +5,11 @@ namespace OldFormatsSharp
     using System.Globalization;
     using System.IO;
 
+    /// <summary>
+    /// This class implments a parser for INI-style files.
+    /// It is loosely based on the VCL's TCustomIniFile.
+    /// All changes are cached locally until written out with UpdateFile()
+    /// </summary>
     public class IniFile : IDisposable
     {
         private List<string> lines_ = new List<string>();
@@ -81,7 +86,7 @@ namespace OldFormatsSharp
         /// Write cached contents to file. The file is created if it doesn't exist.
         /// </summary>
         public virtual void UpdateFile() {
-            using (StreamWriter writer = new StreamWriter(File.Open(FileName, FileMode.Create, FileAccess.Write))) {
+            using (StreamWriter writer = new StreamWriter(FileName)) {
                 for (int i = 0; i < Count; i++) {
                     writer.WriteLine(this[i]);
                 }
