@@ -73,7 +73,7 @@ namespace OldFormatsSharp.tests
         }
 
         [Test]
-        public void EraseSection() {
+        public void EraseSectionTop() {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.IsTrue(ini.SectionExists("Section1"));
                 ini.EraseSection("Section1");
@@ -83,6 +83,20 @@ namespace OldFormatsSharp.tests
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.IsFalse(ini.SectionExists("Section1"));
                 Assert.IsTrue(ini.SectionExists("Test"));
+            }
+        }
+
+        [Test]
+        public void EraseSectionBottom() {
+            using (IniFile ini = new IniFile(fileName)) {
+                Assert.IsTrue(ini.SectionExists("Test"));
+                ini.EraseSection("Test");
+                Assert.IsFalse(ini.SectionExists("Test"));
+                Assert.IsTrue(ini.SectionExists("Section1"));
+            }
+            using (IniFile ini = new IniFile(fileName)) {
+                Assert.IsFalse(ini.SectionExists("Test"));
+                Assert.IsTrue(ini.SectionExists("Section1"));
             }
         }
 
@@ -155,9 +169,6 @@ namespace OldFormatsSharp.tests
                 ini.WriteBool("Section1", "doesnotexist", true);
                 Assert.IsTrue(ini.ReadBool("Section1", "doesnotexist", false));
             }
-            using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsTrue(ini.ReadBool("Section1", "doesnotexist", false));
-            }
         }
 
         [Test]
@@ -173,9 +184,6 @@ namespace OldFormatsSharp.tests
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreNotEqual(42, ini.ReadInteger("Section1", "doesnotexist", 0));
                 ini.WriteInteger("Section1", "doesnotexist", 42);
-                Assert.AreEqual(42, ini.ReadInteger("Section1", "doesnotexist", 0));
-            }
-            using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(42, ini.ReadInteger("Section1", "doesnotexist", 0));
             }
         }
@@ -195,8 +203,14 @@ namespace OldFormatsSharp.tests
                 ini.WriteDouble("Section1", "doesnotexist", 23.42);
                 Assert.AreEqual(23.42, ini.ReadDouble("Section1", "doesnotexist", 0));
             }
+        }
+
+        [Test]
+        public void WriteDoubleInvariant() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(23.42, ini.ReadDouble("Section1", "doesnotexist", 0));
+                Assert.AreNotEqual(23.42, ini.ReadDoubleInvariant("Section1", "doesnotexist", 0));
+                ini.WriteDoubleInvariant("Section1", "doesnotexist", 23.42);
+                Assert.AreEqual(23.42, ini.ReadDoubleInvariant("Section1", "doesnotexist", 0));
             }
         }
 
@@ -204,7 +218,6 @@ namespace OldFormatsSharp.tests
         public void ReadDateTime() {
             DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
             using (IniFile ini = new IniFile(fileName)) {
-
                 Assert.AreEqual(date, ini.ReadDateTime("Test", "date", new DateTime(), CultureInfo.InvariantCulture));
                 Assert.AreEqual(date, ini.ReadDateTime("Test", "date", "yyyy-MM-dd HH:mm:ss", new DateTime(), CultureInfo.InvariantCulture));
             }
@@ -218,8 +231,16 @@ namespace OldFormatsSharp.tests
                 ini.WriteDateTime("Section1", "doesnotexist", date, CultureInfo.InvariantCulture);
                 Assert.AreEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
             }
+        }
+
+        [Test]
+        public void WriteDateTimeFormatted() {
+            DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
+            DateTime date2 = new DateTime(2009, 1, 1, 0, 0, 0);
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreNotEqual(date2, ini.ReadDateTime("Section1", "doesnotexist", "yyyy" , new DateTime(), CultureInfo.InvariantCulture));
+                ini.WriteDateTime("Section1", "doesnotexist", "yyyy", date, CultureInfo.InvariantCulture);
+                Assert.AreEqual(date2, ini.ReadDateTime("Section1", "doesnotexist", "yyyy", new DateTime(), CultureInfo.InvariantCulture));
             }
         }
 
