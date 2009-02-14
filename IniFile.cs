@@ -365,7 +365,7 @@ namespace OldFormatsSharp
         /// </summary>
         /// <param name="format">A format string to format the data</param>
         /// <param name="provider">A FormatProvider to format the data.</param>
-        public void WriteDateTime(string section, string key, DateTime value, string format, IFormatProvider provider) {
+        public void WriteDateTime(string section, string key, string format, DateTime value, IFormatProvider provider) {
             WriteString(section, key, value.ToString(format, provider));
         }
     }
