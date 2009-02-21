@@ -1,4 +1,4 @@
-namespace OldFormatsSharp.tests
+namespace NIniFile.Test
 {
     using System;
     using System.Globalization;

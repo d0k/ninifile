@@ -25,7 +25,7 @@
  *
  */
 
-namespace OldFormatsSharp
+namespace NIniFile
 {
     using System;
     using System.Collections.Generic;
