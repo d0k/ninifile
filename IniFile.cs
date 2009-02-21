@@ -134,10 +134,12 @@ namespace NIniFile
         }
 
         private int SkipToSection(string name) {
-            string needle = "[" + name + "]";
-            for (int i = 0; i < Count; i++) {
-                if (StripComments(this[i]) == needle)
-                    return i;
+            if (name != null) {
+                string needle = "[" + name + "]";
+                for (int i = 0; i < Count; i++) {
+                    if (StripComments(this[i]) == needle)
+                        return i;
+                }
             }
             return -1;
         }
@@ -195,11 +197,13 @@ namespace NIniFile
         }
 
         private int FindKey(string key, int i) {
-            for (; i < Count; i++) {
-                string line = StripComments(this[i]);
-                if (line.StartsWith(key + '=', StringComparison.Ordinal)
-                    || line.StartsWith(key + " =", StringComparison.Ordinal))
-                    return i;
+            if (key != null) {
+                for (; i < Count; i++) {
+                    string line = StripComments(this[i]);
+                    if (line.StartsWith(key + '=', StringComparison.Ordinal)
+                        || line.StartsWith(key + " =", StringComparison.Ordinal))
+                        return i;
+                }
             }
             return -1;
         }
@@ -231,6 +235,8 @@ namespace NIniFile
         /// </summary>
         public virtual void WriteString(string section, string key,
                                         string value) {
+            if (section == null || key == null || value == null)
+                return;
             string newLine = key + '=' + value;
             int i = SkipToSection(section);
             if (i == -1) {
