@@ -72,32 +72,27 @@ namespace NIniFile.Test
             }
         }
 
-        [Test]
-        public void EraseSectionTop() {
+        private void EraseSection(string remove, string exists) {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsTrue(ini.SectionExists("Section1"));
-                ini.EraseSection("Section1");
-                Assert.IsFalse(ini.SectionExists("Section1"));
-                Assert.IsTrue(ini.SectionExists("Test"));
+                Assert.IsTrue(ini.SectionExists(remove));
+                ini.EraseSection(remove);
+                Assert.IsFalse(ini.SectionExists(remove));
+                Assert.IsTrue(ini.SectionExists(exists));
             }
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsFalse(ini.SectionExists("Section1"));
-                Assert.IsTrue(ini.SectionExists("Test"));
+                Assert.IsFalse(ini.SectionExists(remove));
+                Assert.IsTrue(ini.SectionExists(exists));
             }
         }
 
         [Test]
+        public void EraseSectionTop() {
+            EraseSection("Section1", "Test");
+        }
+
+        [Test]
         public void EraseSectionBottom() {
-            using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsTrue(ini.SectionExists("Test"));
-                ini.EraseSection("Test");
-                Assert.IsFalse(ini.SectionExists("Test"));
-                Assert.IsTrue(ini.SectionExists("Section1"));
-            }
-            using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsFalse(ini.SectionExists("Test"));
-                Assert.IsTrue(ini.SectionExists("Section1"));
-            }
+            EraseSection("Test", "Section1");
         }
 
         [Test]
@@ -129,28 +124,25 @@ namespace NIniFile.Test
             }
         }
 
-        [Test]
-        public void WriteStringKeyExists() {
+        private void WriteStringKey(string key, string value, string firstvalue) {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual("bar", ini.ReadString("Section1", "foo"));
-                ini.WriteString("Section1", "foo", "qux");
-                Assert.AreEqual("qux", ini.ReadString("Section1", "foo"));
+                Assert.AreEqual(firstvalue, ini.ReadString("Section1", key));
+                ini.WriteString("Section1", key, value);
+                Assert.AreEqual(value, ini.ReadString("Section1", key));
             }
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual("qux", ini.ReadString("Section1", "foo"));
+                Assert.AreEqual(value, ini.ReadString("Section1", key));
             }
         }
 
         [Test]
+        public void WriteStringKeyExists() {
+            WriteStringKey("foo", "qux", "bar");
+        }
+
+        [Test]
         public void WriteStringKeyDoesNotExist() {
-            using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(String.Empty, ini.ReadString("Section1", "bar"));
-                ini.WriteString("Section1", "bar", "foo");
-                Assert.AreEqual("foo", ini.ReadString("Section1", "bar"));
-            }
-            using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual("foo", ini.ReadString("Section1", "bar"));
-            }
+            WriteStringKey("bar", "foo", string.Empty);
         }
 
         [Test]
