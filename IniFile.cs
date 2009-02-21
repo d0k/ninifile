@@ -124,11 +124,13 @@ namespace NIniFile
         /// Removes comments (starting with ;) and supoerflous whitespace from line
         /// </summary>
         protected static string StripComments(string line) {
-            if (line.IndexOf(';') != -1) {
-                return line.Remove(line.IndexOf(';')).Trim();
-            } else {
-                return line.Trim();
+            if (line != null) {
+                if (line.IndexOf(';') != -1)
+                    return line.Remove(line.IndexOf(';')).Trim();
+                else
+                    return line.Trim();
             }
+            return string.Empty;
         }
 
         private int SkipToSection(string name) {
