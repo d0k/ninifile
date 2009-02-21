@@ -39,7 +39,7 @@ namespace NIniFile
     /// </summary>
     public class IniFile : IDisposable
     {
-        private List<string> lines_ = new List<string>();
+        private readonly List<string> lines_ = new List<string>();
 
         protected string this[int index] {
             get { return lines_[index]; }
@@ -53,7 +53,7 @@ namespace NIniFile
             get { return lines_.Count; }
         }
 
-        private string fileName_;
+        private readonly string fileName_;
         /// <summary>
         /// Gets the name of the associated file.
         /// </summary>
@@ -87,7 +87,7 @@ namespace NIniFile
         /// contents of fileName if it exists.
         /// </summary>
         public IniFile(string fileName) {
-            this.fileName_ = fileName;
+            fileName_ = fileName;
             if (File.Exists(fileName)) {
                 using (StreamReader reader = new StreamReader(fileName)) {
                     while (reader.Peek() != -1)
@@ -128,8 +128,7 @@ namespace NIniFile
             if (line != null) {
                 if (line.IndexOf(';') != -1)
                     return line.Remove(line.IndexOf(';')).Trim();
-                else
-                    return line.Trim();
+                return line.Trim();
             }
             return string.Empty;
         }
@@ -137,7 +136,6 @@ namespace NIniFile
         private int SkipToSection(string name) {
             string needle = "[" + name + "]";
             for (int i = 0; i < Count; i++) {
-
                 if (StripComments(this[i]) == needle)
                     return i;
             }
@@ -219,7 +217,7 @@ namespace NIniFile
                 i = FindKey(key, i);
                 if (i != -1) {
                     string line = StripComments(this[i]);
-                    char[] trimmer = new char[] { ' ', '"', '\r' };
+                    char[] trimmer = new[] { ' ', '"', '\r' };
                     return line.Substring(line.IndexOf('=') + 1).Trim(trimmer);
                 }
             }

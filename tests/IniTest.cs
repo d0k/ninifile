@@ -1,4 +1,4 @@
-namespace NIniFile.Test
+namespace NIniFile.Tests
 {
     using System;
     using System.Globalization;
@@ -73,7 +73,7 @@ namespace NIniFile.Test
             }
         }
 
-        private void EraseSection(string remove, string exists) {
+        private static void EraseSection(string remove, string exists) {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.IsTrue(ini.SectionExists(remove));
                 ini.EraseSection(remove);
@@ -131,7 +131,7 @@ namespace NIniFile.Test
             }
         }
 
-        private void WriteStringKey(string key, string value,
+        private static void WriteStringKey(string key, string value,
                                     string firstvalue) {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(firstvalue, ini.ReadString("Section1", key));
