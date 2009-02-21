@@ -221,7 +221,7 @@ namespace NIniFile
                 i = FindKey(key, i);
                 if (i != -1) {
                     string line = StripComments(this[i]);
-                    char[] trimmer = new[] { ' ', '"', '\r' };
+                    char[] trimmer = new char[] { ' ', '"', '\r' };
                     return line.Substring(line.IndexOf('=') + 1).Trim(trimmer);
                 }
             }
