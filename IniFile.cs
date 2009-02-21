@@ -83,15 +83,15 @@ namespace NIniFile
         }
 
         /// <summary>
-        /// Initializes a new IniFile and caches the contents of fileName if it exists.
+        /// Initializes a new IniFile and caches the
+        /// contents of fileName if it exists.
         /// </summary>
         public IniFile(string fileName) {
             this.fileName_ = fileName;
             if (File.Exists(fileName)) {
                 using (StreamReader reader = new StreamReader(fileName)) {
-                    while (reader.Peek() != -1) {
+                    while (reader.Peek() != -1)
                         Add(reader.ReadLine().Trim());
-                    }
                 }
             }
         }
@@ -110,18 +110,19 @@ namespace NIniFile
         }
 
         /// <summary>
-        /// Write cached contents to file. The file is created if it doesn't exist.
+        /// Write cached contents to file. The file is created if it
+        /// doesn't exist.
         /// </summary>
         public virtual void UpdateFile() {
             using (StreamWriter writer = new StreamWriter(FileName)) {
-                for (int i = 0; i < Count; i++) {
+                for (int i = 0; i < Count; i++)
                     writer.WriteLine(this[i]);
-                }
             }
         }
 
         /// <summary>
-        /// Removes comments (starting with ;) and supoerflous whitespace from line
+        /// Removes comments (starting with ;) and supoerflous
+        /// whitespace from line
         /// </summary>
         protected static string StripComments(string line) {
             if (line != null) {
@@ -158,7 +159,9 @@ namespace NIniFile
             if (i != -1) {
                 for (; i < Count; i++) {
                     string line = this[i];
-                    if (line.StartsWith(name + '=', StringComparison.Ordinal) || line.StartsWith(name + " =", StringComparison.Ordinal)) {
+                    if (line.StartsWith(name + '=', StringComparison.Ordinal)
+                        || line.StartsWith(name + " =",
+                                           StringComparison.Ordinal)) {
                         RemoveLine(i);
                         return;
                     }
@@ -176,7 +179,8 @@ namespace NIniFile
 
                 for (; i < Count; i++) {
                     string line = StripComments(this[i]);
-                    if (line.Length != 0 && line[0] == '[' && line[line.Length - 1] == ']')
+                    if (line.Length != 0 && line[0] == '['
+                        && line[line.Length - 1] == ']')
                         return;
 
                     RemoveLine(i);
@@ -195,7 +199,8 @@ namespace NIniFile
         private int FindKey(string key, int i) {
             for (; i < Count; i++) {
                 string line = StripComments(this[i]);
-                if (line.StartsWith(key + '=', StringComparison.Ordinal) || line.StartsWith(key + " =", StringComparison.Ordinal))
+                if (line.StartsWith(key + '=', StringComparison.Ordinal)
+                    || line.StartsWith(key + " =", StringComparison.Ordinal))
                     return i;
             }
             return -1;
@@ -204,14 +209,18 @@ namespace NIniFile
         /// <summary>
         /// Gets the contents at the specified key as a string.
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist</param>
-        public virtual string ReadString(string section, string key, string defaultvalue) {
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist
+        /// </param>
+        public virtual string ReadString(string section, string key,
+                                         string defaultvalue) {
             int i = SkipToSection(section);
             if (i != -1) {
                 i = FindKey(key, i);
                 if (i != -1) {
                     string line = StripComments(this[i]);
-                    return line.Substring(line.IndexOf('=') + 1).Trim(new char[] { ' ', '"' });
+                    char[] trimmer = new char[] { ' ', '"', '\r' };
+                    return line.Substring(line.IndexOf('=') + 1).Trim(trimmer);
                 }
             }
             return defaultvalue;
@@ -222,7 +231,8 @@ namespace NIniFile
         /// <b>section</b>. The key/section will be created if the key and/or
         /// section doesn't exist.
         /// </summary>
-        public virtual void WriteString(string section, string key, string value) {
+        public virtual void WriteString(string section, string key,
+                                        string value) {
             string newLine = key + '=' + value;
             int i = SkipToSection(section);
             if (i == -1) {
@@ -231,19 +241,21 @@ namespace NIniFile
             } else {
                 i++;
                 int j = FindKey(key, i);
-                if (j != -1) {
+                if (j != -1)
                     this[i] = newLine;
-                } else {
+                else
                     Insert(i + 1, newLine);
-                }
             }
         }
 
         /// <summary>
         /// Gets the contents at the specified key as a bool.
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
-        public virtual bool ReadBool(string section, string key, bool defaultvalue) {
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
+        public virtual bool ReadBool(string section, string key,
+                                     bool defaultvalue) {
             bool ret;
             if (bool.TryParse(ReadString(section, key), out ret))
                 return ret;
@@ -251,7 +263,8 @@ namespace NIniFile
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>.
         /// </summary>
         public virtual void WriteBool(string section, string key, bool value) {
             WriteString(section, key, value.ToString());
@@ -260,83 +273,117 @@ namespace NIniFile
         /// <summary>
         /// Gets the contents at the specified key as a integer.
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
-        public virtual int ReadInteger(string section, string key, int defaultvalue) {
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
+        public virtual int ReadInteger(string section, string key,
+                                       int defaultvalue) {
             int ret;
-            if (int.TryParse(ReadString(section, key), NumberStyles.Integer, CultureInfo.InvariantCulture, out ret))
+            if (int.TryParse(ReadString(section, key), NumberStyles.Integer,
+                            CultureInfo.InvariantCulture, out ret))
                 return ret;
             return defaultvalue;
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>.
         /// </summary>
-        public virtual void WriteInteger(string section, string key, int value) {
-            WriteString(section, key, value.ToString(CultureInfo.InvariantCulture));
+        public virtual void WriteInteger(string section, string key,
+                                         int value) {
+            WriteString(section, key,
+                        value.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
         /// Gets the contents at the specified key as a double.
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
         /// <param name="provider">A FormatProvider to read the data.</param>
-        public virtual double ReadDouble(string section, string key, double defaultvalue, IFormatProvider provider) {
+        public virtual double ReadDouble(string section, string key,
+                                         double defaultvalue,
+                                         IFormatProvider provider) {
             double ret;
-            if (double.TryParse(ReadString(section, key), NumberStyles.Float, provider, out ret))
+            if (double.TryParse(ReadString(section, key), NumberStyles.Float,
+                                provider, out ret))
                 return ret;
             return defaultvalue;
         }
 
         /// <summary>
         /// Gets the contents at the specified key as a double.
-        /// The invariant culture is used to format the string. (i.e. decimal separator = '.')
+        /// The invariant culture is used to format the string.
+        /// (i.e. decimal separator = '.')
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
-        public virtual double ReadDoubleInvariant(string section, string key, double defaultvalue) {
-            return ReadDouble(section, key, defaultvalue, CultureInfo.InvariantCulture);
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
+        public virtual double ReadDoubleInvariant(string section, string key,
+                                                  double defaultvalue) {
+            return ReadDouble(section, key, defaultvalue,
+                              CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         /// Gets the contents at the specified key as a double.
-        /// The current culture is used to format the string. (e.g. decimal separator = ',' on german OS)
+        /// The current culture is used to format the string.
+        /// (e.g. decimal separator = ',' on german OS)
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
-        public virtual double ReadDouble(string section, string key, double defaultvalue) {
-            return ReadDouble(section, key, defaultvalue, CultureInfo.CurrentCulture);
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
+        public virtual double ReadDouble(string section, string key,
+                                         double defaultvalue) {
+            return ReadDouble(section, key, defaultvalue,
+                              CultureInfo.CurrentCulture);
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>.
         /// </summary>
         /// <param name="provider">A FormatProvider to format the data.</param>
-        public virtual void WriteDouble(string section, string key, double value, IFormatProvider provider) {
+        public virtual void WriteDouble(string section, string key,
+                                        double value,
+                                        IFormatProvider provider) {
             WriteString(section, key, value.ToString(provider));
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
-        /// The invariant culture is used to format the string. (i.e. decimal separator = '.')
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>. The invariant culture is used to format the string.
+        /// (i.e. decimal separator = '.')
         /// </summary>
-        public virtual void WriteDoubleInvariant(string section, string key, double value) {
+        public virtual void WriteDoubleInvariant(string section, string key,
+                                                 double value) {
             WriteDouble(section, key, value, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
-        /// The current culture is used to format the string. (e.g. decimal separator = ',' on german OS)
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>. The current culture is used to format the string.
+        /// (e.g. decimal separator = ',' on german OS)
         /// </summary>
-        public virtual void WriteDouble(string section, string key, double value) {
+        public virtual void WriteDouble(string section, string key,
+                                        double value) {
             WriteDouble(section, key, value, CultureInfo.CurrentCulture);
         }
 
         /// <summary>
         /// Gets the contents at the specified key as a DateTime.
         /// </summary>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
         /// <param name="provider">A FormatProvider to format the data.</param>
-        public DateTime ReadDateTime(string section, string key, DateTime defaultvalue, IFormatProvider provider) {
+        public DateTime ReadDateTime(string section, string key,
+                                     DateTime defaultvalue,
+                                     IFormatProvider provider) {
             DateTime ret;
-            if (DateTime.TryParse(ReadString(section, key), provider, DateTimeStyles.None, out ret))
+            if (DateTime.TryParse(ReadString(section, key), provider,
+                                  DateTimeStyles.None, out ret))
                 return ret;
             return defaultvalue;
         }
@@ -345,29 +392,42 @@ namespace NIniFile
         /// Gets the contents at the specified key as a DateTime.
         /// </summary>
         /// <param name="format">A format string to format the data</param>
-        /// <param name="defaultvalue">Is returned if the key doesn't exist or couldn't be parsed</param>
+        /// <param name="defaultvalue">
+        /// Is returned if the key doesn't exist or couldn't be parsed
+        /// </param>
         /// <param name="provider">A FormatProvider to format the data.</param>
-        public DateTime ReadDateTime(string section, string key, string format, DateTime defaultvalue, IFormatProvider provider) {
+        public DateTime ReadDateTime(string section, string key, string format,
+                                     DateTime defaultvalue,
+                                     IFormatProvider provider) {
             DateTime ret;
-            if (DateTime.TryParseExact(ReadString(section, key), format, provider, DateTimeStyles.None, out ret))
+            if (DateTime.TryParseExact(ReadString(section, key), format,
+                                       provider, DateTimeStyles.None, out ret))
                 return ret;
             return defaultvalue;
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>.
         /// </summary>
         /// <param name="provider">A FormatProvider to format the data.</param>
-        public void WriteDateTime(string section, string key, DateTime value, IFormatProvider provider) {
+        public void WriteDateTime(string section, string key, DateTime value,
+                                  IFormatProvider provider) {
             WriteString(section, key, value.ToString(provider));
         }
 
         /// <summary>
-        /// Writes <b>value</b> to the key <b>key</b> in the section <b>section</b>.
+        /// Writes <b>value</b> to the key <b>key</b> in the section
+        /// <b>section</b>.
         /// </summary>
-        /// <param name="format">A format string to format the data</param>
-        /// <param name="provider">A FormatProvider to format the data.</param>
-        public void WriteDateTime(string section, string key, string format, DateTime value, IFormatProvider provider) {
+        /// <param name="format">
+        /// A format string to format the data
+        /// </param>
+        /// <param name="provider">
+        /// A FormatProvider to format the data.
+        /// </param>
+        public void WriteDateTime(string section, string key, string format,
+                                  DateTime value, IFormatProvider provider) {
             WriteString(section, key, value.ToString(format, provider));
         }
     }

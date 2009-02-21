@@ -44,7 +44,8 @@ namespace NIniFile.Test
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual("bar", ini.ReadString("Section1", "foo"));
                 Assert.AreEqual("23", ini.ReadString("Test", "i"));
-                Assert.AreEqual("acme payroll.dat", ini.ReadString("Test", "file"));
+                Assert.AreEqual("acme payroll.dat",
+                                ini.ReadString("Test", "file"));
             }
         }
 
@@ -98,15 +99,21 @@ namespace NIniFile.Test
         [Test]
         public void DeleteKey() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
-                Assert.AreNotEqual(String.Empty, ini.ReadString("Test", "file", String.Empty));
+                Assert.AreNotEqual(String.Empty,
+                                   ini.ReadString("Test", "b", String.Empty));
+                Assert.AreNotEqual(String.Empty,
+                                   ini.ReadString("Test", "file",
+                                                  String.Empty));
                 ini.DeleteKey("Test", "b");
                 ini.DeleteKey("Test", "file");
-                Assert.AreEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
-                Assert.AreEqual(String.Empty, ini.ReadString("Test", "file", String.Empty));
+                Assert.AreEqual(String.Empty,
+                                ini.ReadString("Test", "b", String.Empty));
+                Assert.AreEqual(String.Empty,
+                                ini.ReadString("Test", "file", String.Empty));
             }
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(String.Empty, ini.ReadString("Test", "b", String.Empty));
+                Assert.AreEqual(String.Empty,
+                                ini.ReadString("Test", "b", String.Empty));
             }
         }
 
@@ -124,7 +131,8 @@ namespace NIniFile.Test
             }
         }
 
-        private void WriteStringKey(string key, string value, string firstvalue) {
+        private void WriteStringKey(string key, string value,
+                                    string firstvalue) {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(firstvalue, ini.ReadString("Section1", key));
                 ini.WriteString("Section1", key, value);
@@ -157,7 +165,8 @@ namespace NIniFile.Test
         [Test]
         public void WriteBool() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.IsFalse(ini.ReadBool("Section1", "doesnotexist", false));
+                Assert.IsFalse(ini.ReadBool("Section1",
+                                            "doesnotexist", false));
                 ini.WriteBool("Section1", "doesnotexist", true);
                 Assert.IsTrue(ini.ReadBool("Section1", "doesnotexist", false));
             }
@@ -166,7 +175,8 @@ namespace NIniFile.Test
         [Test]
         public void ReadInteger() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(-99, ini.ReadInteger("Test", "doesnotexist", -99));
+                Assert.AreEqual(-99, ini.ReadInteger("Test",
+                                                     "doesnotexist", -99));
                 Assert.AreEqual(23, ini.ReadInteger("Test", "i", 0));
             }
         }
@@ -174,9 +184,11 @@ namespace NIniFile.Test
         [Test]
         public void WriteInteger() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(42, ini.ReadInteger("Section1", "doesnotexist", 0));
+                Assert.AreNotEqual(42, ini.ReadInteger("Section1",
+                                                       "doesnotexist", 0));
                 ini.WriteInteger("Section1", "doesnotexist", 42);
-                Assert.AreEqual(42, ini.ReadInteger("Section1", "doesnotexist", 0));
+                Assert.AreEqual(42, ini.ReadInteger("Section1",
+                                                    "doesnotexist", 0));
             }
         }
 
@@ -184,25 +196,32 @@ namespace NIniFile.Test
         public void ReadDouble() {
             using (IniFile ini = new IniFile(fileName)) {
                 Assert.AreEqual(1.23, ini.ReadDoubleInvariant("Test", "d", 0));
-                Assert.AreEqual(1.23, ini.ReadDouble("Test", "d2", 0, CultureInfo.GetCultureInfo("de-DE")));
+                Assert.AreEqual(1.23, ini.ReadDouble("Test", "d2", 0,
+                                CultureInfo.GetCultureInfo("de-DE")));
             }
         }
 
         [Test]
         public void WriteDouble() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(23.42, ini.ReadDouble("Section1", "doesnotexist", 0));
+                Assert.AreNotEqual(23.42, ini.ReadDouble("Section1",
+                                                         "doesnotexist", 0));
                 ini.WriteDouble("Section1", "doesnotexist", 23.42);
-                Assert.AreEqual(23.42, ini.ReadDouble("Section1", "doesnotexist", 0));
+                Assert.AreEqual(23.42, ini.ReadDouble("Section1",
+                                                      "doesnotexist", 0));
             }
         }
 
         [Test]
         public void WriteDoubleInvariant() {
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(23.42, ini.ReadDoubleInvariant("Section1", "doesnotexist", 0));
+                Assert.AreNotEqual(23.42,
+                                  ini.ReadDoubleInvariant("Section1",
+                                  "doesnotexist", 0));
                 ini.WriteDoubleInvariant("Section1", "doesnotexist", 23.42);
-                Assert.AreEqual(23.42, ini.ReadDoubleInvariant("Section1", "doesnotexist", 0));
+                Assert.AreEqual(23.42,
+                                ini.ReadDoubleInvariant("Section1",
+                                "doesnotexist", 0));
             }
         }
 
@@ -210,8 +229,11 @@ namespace NIniFile.Test
         public void ReadDateTime() {
             DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreEqual(date, ini.ReadDateTime("Test", "date", new DateTime(), CultureInfo.InvariantCulture));
-                Assert.AreEqual(date, ini.ReadDateTime("Test", "date", "yyyy-MM-dd HH:mm:ss", new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreEqual(date, ini.ReadDateTime("Test", "date",
+                                new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreEqual(date, ini.ReadDateTime("Test", "date",
+                                "yyyy-MM-dd HH:mm:ss", new DateTime(),
+                                CultureInfo.InvariantCulture));
             }
         }
 
@@ -219,9 +241,15 @@ namespace NIniFile.Test
         public void WriteDateTime() {
             DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
-                ini.WriteDateTime("Section1", "doesnotexist", date, CultureInfo.InvariantCulture);
-                Assert.AreEqual(date, ini.ReadDateTime("Section1", "doesnotexist", new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreNotEqual(date,
+                                   ini.ReadDateTime("Section1", "doesnotexist",
+                                   new DateTime(),
+                                   CultureInfo.InvariantCulture));
+                ini.WriteDateTime("Section1", "doesnotexist", date,
+                                  CultureInfo.InvariantCulture);
+                Assert.AreEqual(date,
+                                ini.ReadDateTime("Section1", "doesnotexist",
+                                new DateTime(), CultureInfo.InvariantCulture));
             }
         }
 
@@ -230,9 +258,16 @@ namespace NIniFile.Test
             DateTime date = new DateTime(2009, 2, 13, 23, 31, 30);
             DateTime date2 = new DateTime(2009, 1, 1, 0, 0, 0);
             using (IniFile ini = new IniFile(fileName)) {
-                Assert.AreNotEqual(date2, ini.ReadDateTime("Section1", "doesnotexist", "yyyy" , new DateTime(), CultureInfo.InvariantCulture));
-                ini.WriteDateTime("Section1", "doesnotexist", "yyyy", date, CultureInfo.InvariantCulture);
-                Assert.AreEqual(date2, ini.ReadDateTime("Section1", "doesnotexist", "yyyy", new DateTime(), CultureInfo.InvariantCulture));
+                Assert.AreNotEqual(date2,
+                                   ini.ReadDateTime("Section1","doesnotexist",
+                                   "yyyy" , new DateTime(),
+                                   CultureInfo.InvariantCulture));
+                ini.WriteDateTime("Section1", "doesnotexist", "yyyy", date,
+                                  CultureInfo.InvariantCulture);
+                Assert.AreEqual(date2,
+                                ini.ReadDateTime("Section1", "doesnotexist",
+                                "yyyy", new DateTime(),
+                                CultureInfo.InvariantCulture));
             }
         }
 
