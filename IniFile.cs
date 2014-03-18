@@ -246,7 +246,7 @@ namespace NIniFile
                 i++;
                 int j = FindKey(key, i);
                 if (j != -1)
-                    this[i] = newLine;
+                    this[j] = newLine;
                 else
                     Insert(i + 1, newLine);
             }
